@@ -1,5 +1,7 @@
 ﻿#include <iostream>
 #include <conio.h>
+#include <cstdlib>
+#include <ctime> 
 using namespace std;
 struct Sinhvien
 {
@@ -91,6 +93,22 @@ void Input(Sinhvien& p)//Nhập sinh viên
 	cout << "Nhap diem: ";
 	cin >> p.Diem;
 }
+void randomdata(Sinhvien& k)
+{
+	
+	char box[100] = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm" ;
+	int box_length = strlen(box);
+	for (int i = 0; i < 15; i++)
+	{
+		srand(time(0));
+		k.Hoten[i] = box[rand() % box_length];
+		
+	};
+	k.Hoten[15] = '\0';
+	k.MSSV = rand() % (20120999 - 20120000 + 1) + 20120000;
+	k.Diem = rand() % (10 - 1 + 1) + 1;
+	
+}
 void printList(List l)//In ra tất cả node
 {
 	node * p;
@@ -161,21 +179,100 @@ void reversenode(List& l)//Đảo ngược node
 	}
 	l.pHead = prev;
 }
+void addnoderandom(List& l, Sinhvien k,int& n)
+{
+	cout << "Nhap so node can them: "; cin >> n;
+	for (int i = 0; i < n; i++)
+	{
+		randomdata(k);
+		cout << k.Hoten << "      " << k.Diem << "         " << k.MSSV << endl;
+		//addFirst(l, k);
+
+	}
+}
+void swapnode(List& l, node* node1, node* node2)//hoán đổi vị trí 2 node
+{
+	Sinhvien temp;
+	temp = node1->key;
+	node1->key = node2->key;
+	node2->key = temp;
+}
+void sort(List& l)//sắp xếp
+{
+	node* temp = l.pHead;
+	while (temp != NULL)
+	{
+		node* temp2 = temp->next;
+		while (temp2 != NULL)
+		{
+			if (temp->key.Diem > temp2->key.Diem)
+				swapnode(l, temp, temp2);
+			temp2 = temp2->next;
+		}
+		temp = temp->next;
+	}
+		
+}
+List find(List& l, char n)// Tìm sinh viên có chữ cái đầu theo yêu cầu
+{
+	List a;
+	initList(a);
+	int k = 1;
+	node* temp = l.pHead;
+	while (temp != NULL)
+	{
+		if (temp->key.Hoten[0] == n)
+			if (k == 1)
+			{
+				addFirst(a, temp->key);
+				k++;
+			}
+			else if (k > 1)
+			{
+				addTail(a, temp->key);
+				k++;
+			}
+		temp = temp->next;
+	}
+	return a;
+}
+void update_node(List& l,Sinhvien k)// update các node 
+{
+	node* q = getnode(k);
+	node* temp = l.pHead;
+	while (temp != NULL)
+	{
+		if (temp->key.MSSV == k.MSSV)
+		{
+			temp->key.Diem = k.Diem;
+			for (int i = 0; i < 50; i++)
+			{
+				temp->key.Hoten[i] = k.Hoten[i];
+			};
+		}
+		temp = temp->next;
+	}
+
+}
 
 int main()
 {
 	Sinhvien k;
-	List l;
-
+	List l, l_find;
+	initList(l);
+	initList(l_find);
+	int n = 0;
+	Input(k);
 	cout << "Nhap thong tin sinh vien vao dau danh sach " << endl;
 	Input(k);
 	addFirst(l, k);
+	//addnoderandom(l, k, n);
 	printList(l);
 	cout << endl;
 
 	cout << "Nhap thong tin sinh vien vao cuoi danh sach" << endl;
 	Input(k);
-	addTail(l, k);
+	addFirst(l, k);
 	printList(l);
 	cout << endl;
 
@@ -190,9 +287,24 @@ int main()
 	addbeforeTail(l, k);
 	printList(l);
 	cout << endl;
-
-	reversenode(l);
+	//l_find = find(l, 'H');
+	Input(k);
+	update_node(l, k);
+	//sort(l);
 	printList(l);
+	cout << endl;
+	printList(l_find);
+	//reversenode(l);
+	/*randomdata(k);
+	addFirst(l, k);
+	randomdata(k);
+	addTail(l, k);
+	randomdata(k);
+	addafterFirst(l, k);
+	randomdata(k);
+	addbeforeTail(l, k);
+	printList(l);*/
+	//addnoderandom(l, k, n);
 
 
 
